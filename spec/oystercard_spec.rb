@@ -1,7 +1,6 @@
 require_relative '../lib/oystercard'
 
 describe Oystercard do
-
   it { is_expected.to respond_to(:top_up).with(1).argument }
 
   # excluding the "deduct" tests because deduct is now a private method.  
@@ -12,6 +11,17 @@ describe Oystercard do
   it { is_expected.to respond_to(:touch_in) }
 
   it { is_expected.to respond_to(:touch_out) }
+
+  # describe "#entry_station" do
+  let(:station){ double :station}
+
+  it 'stores the entry station' do
+    subject.top_up(50)
+    subject.touch_in(station)
+    expect(subject.entry_station).to eq station
+    end 
+  # end
+
 
   it "has a balance of 0 upon initialization" do
     expect(subject.balance).to eq 0
@@ -47,24 +57,24 @@ describe Oystercard do
 
     it "shouldn't let you touch in if balance is less than £1" do
     #  minimum_balance = Oystercard::MINIMUM
-      expect{ subject.touch_in }.to raise_error "Not enough balance"
+      expect{ subject.touch_in(station) }.to raise_error "Not enough balance"
     end
 
-    it "returns true if the card has been touched in" do
+    it "returns station if the card has been touched in" do
       subject.top_up(20)
-      expect(subject.touch_in).to eq true
+      expect(subject.touch_in(station)).to eq station
     end
   end
   describe "#touch_out" do
 
-    it "returns false if the card has been touched out" do
-      expect(subject.touch_out).to eq false
+    it "Set entry_station to nil if the card has been touched out" do
+      expect(subject.touch_out).to eq nil
     end
 
     it "deducts minimum fare upon touching out" do
       minimum = Oystercard::MINIMUM
       subject.top_up(25)
-      subject.touch_in
+      subject.touch_in(station)
       expect { subject.touch_out }.to change { subject.balance }.by -minimum
     end
   end
