@@ -4,7 +4,8 @@ describe Oystercard do
 
   it { is_expected.to respond_to(:top_up).with(1).argument }
 
-  it { is_expected.to respond_to(:deduct) }
+  # excluding the "deduct" tests because deduct is now a private method.  
+  # it { is_expected.to respond_to(:deduct) }
 
   it { is_expected.to respond_to(:in_journey?) }
 
@@ -32,13 +33,16 @@ describe Oystercard do
       expect { subject.top_up(1)}.to raise_error "£#{limit} limit exceeded"
     end
   end
-  describe "#deduct" do
 
-    it "deducts the balance by value amount" do
-      subject.top_up(25)
-      expect{ subject.deduct(10) }.to change{ subject.balance }.by -10
-    end
-  end
+  # excluding the "deduct" tests because deduct is now a private method.
+  # describe "#deduct" do
+  #
+  #   it "deducts the balance by value amount" do
+  #     subject.top_up(25)
+  #     expect{ subject.deduct(10) }.to change{ subject.balance }.by -10
+  #   end
+  # end
+
   describe "#touch_in" do
 
     it "shouldn't let you touch in if balance is less than £1" do
