@@ -1,6 +1,6 @@
 class Oystercard
 
-    attr_reader :balance, :entry_station, :exit_station, :list_of_journeys, :journey
+    attr_reader :balance, :list_of_journeys, :journey
     LIMIT = 90
     MINIMUM = 1
 
@@ -31,6 +31,7 @@ class Oystercard
       fail "Not enough balance" if balance < MINIMUM
       # @entry_station = station
       @journey[:entry_station] = station
+      
       # @in_journey = true
     end
 
