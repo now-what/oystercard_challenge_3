@@ -43,6 +43,14 @@ describe Oystercard do
     expect(subject.journey).to eq journey
   end
 
+  it "should store current journey in the list of journeys" do
+    subject.top_up(20)
+    subject.touch_in(station)
+    subject.touch_out(station)
+    journey = {entry_station: station, exit_station: station}
+    expect(subject.list_of_journeys).to include journey
+  end
+
   describe "#top_up" do
 
     it "tops up the balance with the argument balance provided" do
@@ -94,7 +102,7 @@ describe Oystercard do
       expect { subject.touch_out(station) }.to change { subject.balance }.by -minimum
     end
 
-    it "stores the exit station on touch out" do
+    xit "stores the exit station on touch out" do
       subject.top_up(10)
       subject.touch_in(station)
       subject.touch_out(station)
