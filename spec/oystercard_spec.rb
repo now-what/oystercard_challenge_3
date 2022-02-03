@@ -15,7 +15,7 @@ describe Oystercard do
   # describe "#entry_station" do
   let(:station){ double :station}
 
-  it 'stores the entry station' do
+  xit 'stores the entry station' do
     subject.top_up(50)
     subject.touch_in(station)
     expect(subject.entry_station).to eq station
