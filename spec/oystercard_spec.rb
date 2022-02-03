@@ -3,14 +3,14 @@ require_relative '../lib/oystercard'
 describe Oystercard do
   it { is_expected.to respond_to(:top_up).with(1).argument }
 
-  # excluding the "deduct" tests because deduct is now a private method.  
+  # excluding the "deduct" tests because deduct is now a private method.
   # it { is_expected.to respond_to(:deduct) }
 
   it { is_expected.to respond_to(:in_journey?) }
 
-  it { is_expected.to respond_to(:touch_in) }
+  it { is_expected.to respond_to(:touch_in).with(1).argument }
 
-  it { is_expected.to respond_to(:touch_out) }
+  it { is_expected.to respond_to(:touch_out).with(1).argument }
 
   # describe "#entry_station" do
   let(:station){ double :station}
@@ -19,7 +19,7 @@ describe Oystercard do
     subject.top_up(50)
     subject.touch_in(station)
     expect(subject.entry_station).to eq station
-    end 
+    end
   # end
 
 
@@ -29,6 +29,10 @@ describe Oystercard do
 
   it "is initially not in a journey" do
     expect(subject).not_to be_in_journey
+  end
+
+  it "has an empty list of journeys when initialised" do
+    expect(subject.list_of_journeys).to be_empty
   end
 
   describe "#top_up" do
@@ -44,14 +48,14 @@ describe Oystercard do
     end
   end
 
-  # excluding the "deduct" tests because deduct is now a private method.
-  # describe "#deduct" do
-  #
-  #   it "deducts the balance by value amount" do
-  #     subject.top_up(25)
-  #     expect{ subject.deduct(10) }.to change{ subject.balance }.by -10
-  #   end
-  # end
+  # skipping the "deduct" tests because deduct is now a private method.
+  describe "#deduct" do
+
+    xit "deducts the balance by value amount" do
+      subject.top_up(25)
+      expect{ subject.deduct(10) }.to change{ subject.balance }.by -10
+    end
+  end
 
   describe "#touch_in" do
 
@@ -68,14 +72,24 @@ describe Oystercard do
   describe "#touch_out" do
 
     it "Set entry_station to nil if the card has been touched out" do
-      expect(subject.touch_out).to eq nil
+      subject.top_up(25)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      expect(subject.entry_station).to eq nil
     end
 
     it "deducts minimum fare upon touching out" do
       minimum = Oystercard::MINIMUM
       subject.top_up(25)
       subject.touch_in(station)
-      expect { subject.touch_out }.to change { subject.balance }.by -minimum
+      expect { subject.touch_out(station) }.to change { subject.balance }.by -minimum
+    end
+
+    it "stores the exit station on touch out" do
+      subject.top_up(10)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      expect(subject.exit_station).to eq station
     end
   end
 end
