@@ -35,6 +35,14 @@ describe Oystercard do
     expect(subject.list_of_journeys).to be_empty
   end
 
+  it "should store a single journey" do
+    subject.top_up(20)
+    subject.touch_in(station)
+    subject.touch_out(station)
+    journey = {entry_station: station, exit_station: station}
+    expect(subject.journey).to eq journey
+  end
+
   describe "#top_up" do
 
     it "tops up the balance with the argument balance provided" do
@@ -69,6 +77,7 @@ describe Oystercard do
       expect(subject.touch_in(station)).to eq station
     end
   end
+
   describe "#touch_out" do
 
     it "Set entry_station to nil if the card has been touched out" do
