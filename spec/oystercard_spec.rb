@@ -11,6 +11,7 @@ describe Oystercard do
 
 
   let(:station){ double :station}
+  let(:limit) { Oystercard::LIMIT }
 
   it "has a balance of 0 upon initialization" do
     expect(subject.balance).to eq 0
@@ -31,7 +32,6 @@ describe Oystercard do
     end
 
     it "should fail if balance is more than £90" do
-      limit = Oystercard::LIMIT
       subject.top_up(limit)
       expect { subject.top_up(1)}.to raise_error "£#{limit} limit exceeded"
     end
@@ -43,6 +43,12 @@ describe Oystercard do
     #  minimum_balance = Oystercard::MINIMUM
       expect{ subject.touch_in(station) }.to raise_error "Not enough balance"
     end
+
+    it "should let the user touch in" do 
+      subject.top_up(limit)
+      subject.touch_in("waterloo")
+      expect( subject.journey[:entry_station] ).to eq "waterloo"
+    end 
   end
 
   describe "#touch_out" do
